@@ -13,7 +13,6 @@ Mysql 密码破解工具
 
 '''
 import argparse
-from pymysql.constants import FLAG
 try:
     import pymysql.cursors
 except:
@@ -39,7 +38,7 @@ parser.add_argument('-hh', '--host', help=u"主机IP,必输")
 parser.add_argument('-p', '--port', help=u"mysql端口", default=3306, type=int)
 parser.add_argument('-t', '--threads', help=u"线程数,这里不要设置太多,有可能会导致后面不能正常连接数据库" , default=5, type=int)
 parser.add_argument('-n', '--name', help=u"用户名" , default='root')
-parser.add_argument('-f', '--filepath', help=u"主机IP,必输")
+parser.add_argument('-f', '--filepath', help=u"文件路径,必输")
 parser.add_argument('-db', '--databasename', help=u"要连接的数据库名" , default='information_schema')
 parser.add_argument('-s', '--sleep', help=u"休眠时间,防止访问频繁被对方限制" , default=0,type=int)
 
