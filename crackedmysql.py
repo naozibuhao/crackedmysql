@@ -35,7 +35,7 @@ print u'''
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-hh', '--host', help=u"主机IP,必输")
-parser.add_argument('-p', '--port', help=u"mysql端口", default=3306, type=int)
+parser.add_argument('-p', '--port', help=u"mysql端口,非必输", default=3306, type=int)
 parser.add_argument('-t', '--threads', help=u"线程数,这里不要设置太多,有可能会导致后面不能正常连接数据库" , default=5, type=int)
 parser.add_argument('-n', '--name', help=u"用户名" , default='root')
 parser.add_argument('-f', '--filepath', help=u"文件路径,必输")
